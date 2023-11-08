@@ -15,6 +15,11 @@ public enum BaseResponseStatus {
      * Client Error - 4xx 에러
      */
     NO_AUTH(false, HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다."),
+    MEMBER_ALREADY_EXISTS(false, HttpStatus.CONFLICT.value(), "이미 존재하는 아이디입니다."),
+    USERNAME_NOT_FOUND(false, HttpStatus.NOT_FOUND.value(), "존재하지 않은 아이디입니다."),
+    INVALID_PASSWORD(false, HttpStatus.UNAUTHORIZED.value(), "잘못된 비밀번호입니다."),
+    PASSWORD_MISMATCH(false, HttpStatus.BAD_REQUEST.value(), "입력하신 비밀번호가 다릅니다."),
+    NON_EXIST_MEMBER(false, HttpStatus.NOT_FOUND.value(), "해당 사용자를 찾을 수 없습니다."),
 
     /**
      * Server Error - 5xx 에러

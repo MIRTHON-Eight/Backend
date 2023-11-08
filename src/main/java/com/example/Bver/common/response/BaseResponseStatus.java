@@ -15,6 +15,7 @@ public enum BaseResponseStatus {
      * Client Error - 4xx 에러
      */
     NO_AUTH(false, HttpStatus.UNAUTHORIZED.value(), "권한이 없습니다."),
+    NON_EXIST_STORE(false, HttpStatus.NOT_FOUND.value(), "베이커리를 찾을 수 없습니다."),
 
     /**
      * Server Error - 5xx 에러

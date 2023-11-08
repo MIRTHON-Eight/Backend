@@ -7,9 +7,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MemberLoginReq {
+public class MemberJoinReq {
 
+    private String nickname;
     private String userName;
     private String password;
+    private String passwordCheck;
+    private String phoneNum;
+    private String email;
+    private String address;
+    private String userType;
 
 }

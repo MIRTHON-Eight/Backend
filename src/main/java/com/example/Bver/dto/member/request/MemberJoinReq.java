@@ -17,5 +17,5 @@ public class MemberJoinReq {
     private String email;
     private String address;
     private String memberType;
-
+  
 }

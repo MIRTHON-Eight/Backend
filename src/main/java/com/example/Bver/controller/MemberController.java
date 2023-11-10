@@ -5,6 +5,7 @@ import com.example.Bver.common.response.BaseResponse;
 import com.example.Bver.dto.member.request.MemberJoinReq;
 import com.example.Bver.dto.member.request.MemberLoginReq;
 import com.example.Bver.dto.member.response.MemberInfoRes;
+import com.example.Bver.dto.member.response.MemberLoginRes;
 import com.example.Bver.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +31,10 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/login")
-    public BaseResponse<String> login(@RequestBody MemberLoginReq memberLoginReq) {
+    public BaseResponse<MemberLoginRes> login(@RequestBody MemberLoginReq memberLoginReq) {
         try {
-            String token = memberService.login(memberLoginReq.getUserName(), memberLoginReq.getPassword());
-            return new BaseResponse<>(token);
+            MemberLoginRes memberLoginRes = memberService.login(memberLoginReq.getUserName(), memberLoginReq.getPassword());
+            return new BaseResponse<>(memberLoginRes);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

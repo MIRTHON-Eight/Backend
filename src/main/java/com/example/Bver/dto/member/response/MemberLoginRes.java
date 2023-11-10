@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class MemberInfoRes {
+public class MemberLoginRes {
 
     private Long memberId;
-    private String nickname;
-    private String phoneNum;
-    private String address;
-    private String memberType;
+    private String token;
+
 }

@@ -3,6 +3,7 @@ package com.example.Bver.service;
 import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.member.response.MemberInfoRes;
+import com.example.Bver.dto.member.response.MemberLoginRes;
 import com.example.Bver.entity.Member;
 import com.example.Bver.repository.MemberRepository;
 import com.example.Bver.utils.JwtTokenUtil;
@@ -58,7 +59,7 @@ public class MemberService {
     }
 
     // 로그인
-    public String login(String userName, String password) {
+    public MemberLoginRes login(String userName, String password) {
 
         // userName이 없는 경우
         Member selectedMember = memberRepository.findByUserName(userName)
@@ -70,9 +71,9 @@ public class MemberService {
         }
 
         // 오류가 발생하지 않는다면 토큰 발행
-        String token = JwtTokenUtil.createToken(selectedMember.getUserName(), key, expireTimeMs);
+        String token = JwtTokenUtil.createToken(selectedMember.getId(), selectedMember.getUserName(), key, expireTimeMs);
 
-        return token;
+        return getMemberLoginRes(selectedMember, token);
     }
 
     // 회원 정보 조회 (닉네임, 전화번호, 주소)
@@ -93,7 +94,7 @@ public class MemberService {
     public MemberInfoRes getMemberInfoResDto(Member member) {
 
         MemberInfoRes memberInfoResDto = MemberInfoRes.builder()
-                .id(member.getId())
+                .memberId(member.getId())
                 .nickname(member.getNickname())
                 .phoneNum(member.getPhoneNum())
                 .address(member.getAddress())
@@ -101,5 +102,15 @@ public class MemberService {
                 .build();
 
         return memberInfoResDto;
+    }
+
+    public MemberLoginRes getMemberLoginRes(Member member, String token) {
+
+        MemberLoginRes memberLoginRes  = MemberLoginRes.builder()
+                .memberId(member.getId())
+                .token(token)
+                .build();
+
+        return memberLoginRes;
     }
 }

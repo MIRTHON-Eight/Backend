@@ -15,20 +15,23 @@ public class StoreHomeRes {
     private String storeImg;
     private String storeLogo;
     private String storeName;
+    private String location;
 
     public static StoreHomeRes toStoreHomeRes(Store store) {
         return new StoreHomeRes(
                 store.getStoreId(),
                 store.getStorePhoto(),
                 store.getStoreLogo(),
-                store.getStoreName()
+                store.getStoreName(),
+                store.getLocation()
         );
     }
 
-    public StoreHomeRes(Long storeId, String storeImg, String storeLogo, String storeName) {
+    public StoreHomeRes(Long storeId, String storeImg, String storeLogo, String storeName, String location) {
         this.storeId = storeId;
         this.storeImg = storeImg;
         this.storeLogo = storeLogo;
         this.storeName = storeName;
+        this.location = location;
     }
 }

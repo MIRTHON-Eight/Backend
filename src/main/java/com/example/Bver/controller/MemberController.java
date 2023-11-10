@@ -21,7 +21,7 @@ public class MemberController {
     public BaseResponse<String> join(@RequestBody MemberJoinReq memberJoinReq){
         try {
             memberService.join(memberJoinReq.getUserName(), memberJoinReq.getPassword(), memberJoinReq.getPasswordCheck(), memberJoinReq.getNickname(), memberJoinReq.getEmail(),
-                    memberJoinReq.getPhoneNum(), memberJoinReq.getAddress(), memberJoinReq.getUserType());
+                    memberJoinReq.getPhoneNum(), memberJoinReq.getAddress(), memberJoinReq.getMemberType());
             return new BaseResponse<String>("회원가입에 성공하였습니다.");
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());

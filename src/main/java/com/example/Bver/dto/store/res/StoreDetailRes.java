@@ -15,8 +15,7 @@ public class StoreDetailRes {
     private String storeImg;
     private String storeLogo;
     private String storeName;
-    private Double longitude;
-    private Double latitude;
+    private String location;
     private Boolean isLike;
     private List<MenuBriefRes> menuList;
 

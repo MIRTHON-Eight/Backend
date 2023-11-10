@@ -20,10 +20,7 @@ public class Store {
     private String storeName;
 
     @Column(nullable = false)
-    private Double longitude;
-
-    @Column(nullable = false)
-    private Double latitude;
+    private String location;
 
     @Column(nullable = false)
     private String operatingHour;

@@ -36,8 +36,7 @@ public class StoreService {
                 .storeImg(store.getStorePhoto())
                 .storeLogo(store.getStoreLogo())
                 .storeName(store.getStoreName())
-                .longitude(store.getLongitude())
-                .latitude(store.getLatitude())
+                .location(store.getLocation())
                 .isLike(false) // todo : 회원 찜 구현 시 isLike 조회.
                 .menuList(List.of()) // todo : 해당 가게 메뉴 조회 후 삽입.
                 .build();

@@ -71,15 +71,15 @@ public class MemberService {
         }
 
         // 오류가 발생하지 않는다면 토큰 발행
-        String token = JwtTokenUtil.createToken(selectedMember.getId(), selectedMember.getUserName(), key, expireTimeMs);
+        String token = JwtTokenUtil.createToken(selectedMember.getMemberId(), selectedMember.getUserName(), key, expireTimeMs);
 
         return getMemberLoginRes(selectedMember, token);
     }
 
     // 회원 정보 조회 (닉네임, 전화번호, 주소)
-    public MemberInfoRes getMemberInfo(Long id) {
+    public MemberInfoRes getMemberInfo(Long memberId) {
 
-        Optional<Member> memberOptional = memberRepository.findById(id);
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
 
         // 찾는 사용자가 없는 경우
         if (memberOptional.isPresent()) {
@@ -94,7 +94,7 @@ public class MemberService {
     public MemberInfoRes getMemberInfoResDto(Member member) {
 
         MemberInfoRes memberInfoResDto = MemberInfoRes.builder()
-                .memberId(member.getId())
+                .memberId(member.getMemberId())
                 .nickname(member.getNickname())
                 .phoneNum(member.getPhoneNum())
                 .address(member.getAddress())
@@ -107,7 +107,7 @@ public class MemberService {
     public MemberLoginRes getMemberLoginRes(Member member, String token) {
 
         MemberLoginRes memberLoginRes  = MemberLoginRes.builder()
-                .memberId(member.getId())
+                .memberId(member.getMemberId())
                 .token(token)
                 .build();
 

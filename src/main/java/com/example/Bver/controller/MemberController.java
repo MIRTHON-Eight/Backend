@@ -41,9 +41,9 @@ public class MemberController {
     }
 
     @GetMapping("/members/{memberId}")
-    public BaseResponse<MemberInfoRes> memberInfo(@PathVariable("memberId") Long id) {
+    public BaseResponse<MemberInfoRes> memberInfo(@PathVariable("memberId") Long memberId) {
         try {
-            MemberInfoRes memberInfo = memberService.getMemberInfo(id);
+            MemberInfoRes memberInfo = memberService.getMemberInfo(memberId);
             return new BaseResponse<>(memberInfo);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());

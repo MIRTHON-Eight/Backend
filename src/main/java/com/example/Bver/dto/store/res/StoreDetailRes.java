@@ -1,7 +1,9 @@
 package com.example.Bver.dto.store.res;
 
+import com.example.Bver.entity.Bread;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,15 +17,29 @@ public class StoreDetailRes {
     private String storeImg;
     private String storeLogo;
     private String storeName;
+    private String openTime;
     private String location;
     private Boolean isLike;
     private List<MenuBriefRes> menuList;
 
     @Getter @Setter
+    @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    private static class MenuBriefRes {
+    public static class MenuBriefRes {
         private String menuName;
         private String menuImg;
         private int quantity;
+        private int price;
+        private int discountedPrice;
+
+        static public MenuBriefRes toMenuBriefRes(Bread bread) {
+            return new MenuBriefRes(
+                    bread.getName(),
+                    bread.getImage(),
+                    bread.getQuantity(),
+                    bread.getPrice(),
+                    bread.getDiscountedPrice()
+            );
+        }
     }
 }

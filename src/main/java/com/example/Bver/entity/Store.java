@@ -28,9 +28,9 @@ public class Store {
     @Column(nullable = false)
     private String businessNum;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String storePhoto;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String storeLogo;
 }

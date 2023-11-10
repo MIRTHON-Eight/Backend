@@ -14,7 +14,6 @@ public class SecurityConfig {
         return httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors().and()
                 .authorizeHttpRequests()
                     .antMatchers("/api/**").permitAll()
                     .antMatchers("/api/join", "/api/login").permitAll()

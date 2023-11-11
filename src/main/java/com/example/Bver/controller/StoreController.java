@@ -3,6 +3,7 @@ package com.example.Bver.controller;
 import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponse;
 import com.example.Bver.dto.store.res.StoreDetailRes;
+import com.example.Bver.dto.store.res.StoreBriefRes;
 import com.example.Bver.dto.store.res.StoreHomeRes;
 import com.example.Bver.service.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/api/bakery")
-    public BaseResponse<List<StoreHomeRes>> getBakeries() {
+    public BaseResponse<StoreHomeRes> getBakeries() {
         try {
-            List<StoreHomeRes> bakeries = storeService.getBakeries();
-            return new BaseResponse<>(bakeries);
+            StoreHomeRes storeHomeRes = storeService.getBakeries();
+            return new BaseResponse<>(storeHomeRes);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -40,9 +41,9 @@ public class StoreController {
     }
 
     @GetMapping("/api/myBakery/{memberId}")
-    public BaseResponse<List<StoreHomeRes>> getMyBakeries(@PathVariable Long memberId) {
+    public BaseResponse<List<StoreBriefRes>> getMyBakeries(@PathVariable Long memberId) {
         try {
-            List<StoreHomeRes> myBakeries = storeService.getMyBakeries(memberId);
+            List<StoreBriefRes> myBakeries = storeService.getMyBakeries(memberId);
             return new BaseResponse<>(myBakeries);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());

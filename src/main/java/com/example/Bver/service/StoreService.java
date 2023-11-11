@@ -3,6 +3,7 @@ package com.example.Bver.service;
 import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.store.res.StoreDetailRes;
+import com.example.Bver.dto.store.res.StoreBriefRes;
 import com.example.Bver.dto.store.res.StoreHomeRes;
 import com.example.Bver.entity.Member;
 import com.example.Bver.entity.MyBakery;
@@ -31,10 +32,13 @@ public class StoreService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public List<StoreHomeRes> getBakeries() {
-        return storeRepository.findAll()
-                .stream().map(StoreHomeRes::toStoreHomeRes)
+    public StoreHomeRes getBakeries() {
+        List<StoreBriefRes> discountBakery = getDiscountBakery();
+        List<StoreBriefRes> nearbyBakery = storeRepository.findAll()
+                .stream().map(StoreBriefRes::toStoreBriefRes)
                 .collect(Collectors.toList());
+
+        return new StoreHomeRes(discountBakery, nearbyBakery);
     }
 
     @Transactional(readOnly = true)
@@ -59,7 +63,7 @@ public class StoreService {
                 .build();
     }
 
-    public List<StoreHomeRes> getMyBakeries(Long memberId) throws BaseException {
+    public List<StoreBriefRes> getMyBakeries(Long memberId) throws BaseException {
         try {
             // MyBakeryRepository를 통해 memberId에 해당하는 MyBakery 목록을 조회
             Member member = memberRepository.findById(memberId).orElseThrow(()-> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
@@ -69,7 +73,7 @@ public class StoreService {
             return myBakeries.stream()
                     .map(myBakery -> {
                         Store store = myBakery.getStore();
-                        return StoreHomeRes.toStoreHomeRes(store);
+                        return StoreBriefRes.toStoreBriefRes(store);
                     })
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -86,5 +90,9 @@ public class StoreService {
         } catch (Exception e) {
             throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
         }
+    }
+
+    public List<StoreBriefRes> getDiscountBakery() {
+        return storeRepository.findAllRandom().stream().map(StoreBriefRes::toStoreBriefRes).collect(Collectors.toList());
     }
 }

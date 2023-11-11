@@ -33,6 +33,7 @@ public class Reservation {
     }
     public Reservation(Member memberId, Store storeId) {
         this.memberId = memberId;
+        this.storeId = storeId;
         this.createdAt = LocalDateTime.now();
     }
 }

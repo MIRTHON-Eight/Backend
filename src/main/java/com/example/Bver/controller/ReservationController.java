@@ -5,11 +5,14 @@ import com.example.Bver.common.response.BaseResponse;
 import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.reservation.ReservationForm;
 import com.example.Bver.entity.Bread;
+import com.example.Bver.entity.Member;
 import com.example.Bver.entity.Reservation;
 import com.example.Bver.entity.ReservationBread;
 import com.example.Bver.repository.BreadRepository;
+import com.example.Bver.repository.MemberRepository;
 import com.example.Bver.repository.ReservationBreadRepository;
 import com.example.Bver.repository.ReservationRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,32 +23,29 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 public class ReservationController {
 
-    @Autowired
-    private ReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
+    private final MemberRepository memberRepository;
+    private final BreadRepository breadRepository;
 
-    private BreadRepository breadRepository;
+    private final ReservationBreadRepository reservationBreadRepository;
 
-    private ReservationBreadRepository reservationBreadRepository;
-
-    @GetMapping("/api/reservations")
-    public BaseResponse<List<Map<String, Integer>>> getReservations() {
-        try {
-            List<Reservation> reservations = reservationRepository.findAll();
-
-            List<Map<String, Integer>> responseList = reservations.stream()
-                    .map(reservation -> Collections.singletonMap("id",reservation.getId().intValue()))
-                    .collect(Collectors.toList());
-
-            //성공응답
-            return new BaseResponse<>(responseList);
-        } catch (Exception e) {
-            // 예외가 발생했을 때의 응답 처리
-            return new BaseResponse<>(false, BaseResponseStatus.INTERNAL_SERVER_ERROR.getCode(), "조회 중 오류가 발생했습니다: " + e.getMessage());
-        }
-    }
+//    @GetMapping("/api/reservations/{memberId}")
+//    public BaseResponse<List<>> getReservations(@PathVariable Long memberId) {
+//        try {
+//            Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
+//            List<Reservation> reservations = reservationRepository.findAllByMemberId(member);
+//
+//            //성공응답
+//            return new BaseResponse<>(responseList);
+//        } catch (Exception e) {
+//            // 예외가 발생했을 때의 응답 처리
+//            return new BaseResponse<>(false, BaseResponseStatus.INTERNAL_SERVER_ERROR.getCode(), "조회 중 오류가 발생했습니다: " + e.getMessage());
+//        }
+//    }
 
     @GetMapping("/api/reservations/{id}")
     public BaseResponse<?> show(@PathVariable Long id) {
@@ -64,13 +64,12 @@ public class ReservationController {
                 ));
     }
 
-    @PostMapping("/api/reservations")
-    public BaseResponse<Integer> create(@RequestBody List<ReservationForm> dto) {
+    @PostMapping("/api/reservations/{memberId}")
+    public BaseResponse<Integer> create(@PathVariable Long memberId, @RequestBody List<ReservationForm> dto) {
         try {
+            Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
             // DTO를 엔티티로 변환
-
-//            Reservation reservation = dto.toEntity();
-            Reservation reservation = new Reservation();
+            Reservation reservation = new Reservation(member);
             // 리파지터리로 엔티티를 DB에 저장
             Reservation saved = reservationRepository.save(reservation);
 

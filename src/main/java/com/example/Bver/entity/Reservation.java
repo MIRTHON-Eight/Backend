@@ -12,22 +12,19 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "Reservation")
-
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-//    public void setQuantity(Integer quantity) {
-//    }
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "breadId")
-//    private Bread bread;
-//
-//    @Column(name = "quantity")
-//    private Integer quantity;
-
-
-
+    static public Reservation toEntity(Member memberId) {
+        return new Reservation(memberId);
+    }
+    public Reservation(Member memberId) {
+        this.memberId = memberId;
+    }
 }

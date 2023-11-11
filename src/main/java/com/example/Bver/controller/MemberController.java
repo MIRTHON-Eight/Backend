@@ -6,6 +6,7 @@ import com.example.Bver.dto.member.request.MemberJoinReq;
 import com.example.Bver.dto.member.request.MemberLoginReq;
 import com.example.Bver.dto.member.response.MemberInfoRes;
 import com.example.Bver.dto.member.response.MemberLoginRes;
+import com.example.Bver.dto.member.response.MyPageRes;
 import com.example.Bver.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -41,10 +42,10 @@ public class MemberController {
     }
 
     @GetMapping("/members/{memberId}")
-    public BaseResponse<MemberInfoRes> memberInfo(@PathVariable("memberId") Long memberId) {
+    public BaseResponse<MyPageRes> memberInfo(@PathVariable("memberId") Long memberId) {
         try {
-            MemberInfoRes memberInfo = memberService.getMemberInfo(memberId);
-            return new BaseResponse<>(memberInfo);
+            MyPageRes myPageRes = memberService.getMemberInfo(memberId);
+            return new BaseResponse<>(myPageRes);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

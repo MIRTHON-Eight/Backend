@@ -4,6 +4,8 @@ import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.member.response.MemberInfoRes;
 import com.example.Bver.dto.member.response.MemberLoginRes;
+import com.example.Bver.dto.member.response.MyPageRes;
+import com.example.Bver.dto.store.res.StoreBriefRes;
 import com.example.Bver.entity.Member;
 import com.example.Bver.repository.MemberRepository;
 import com.example.Bver.utils.JwtTokenUtil;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final StoreService storeService;
     private final BCryptPasswordEncoder encoder;
 
     @Value("${jwt.token.secret}")
@@ -77,17 +81,12 @@ public class MemberService {
     }
 
     // 회원 정보 조회 (닉네임, 전화번호, 주소)
-    public MemberInfoRes getMemberInfo(Long memberId) {
+    public MyPageRes getMemberInfo(Long memberId) {
 
-        Optional<Member> memberOptional = memberRepository.findById(memberId);
-
-        // 찾는 사용자가 없는 경우
-        if (memberOptional.isPresent()) {
-            Member member = memberOptional.get();
-            return getMemberInfoResDto(member);
-        } else {
-            throw new BaseException(BaseResponseStatus.NON_EXIST_MEMBER);
-        }
+        Member member1 = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
+        MemberInfoRes memberInfoResDto = getMemberInfoResDto(member1);
+        List<StoreBriefRes> myBakeries = storeService.getMyBakeries(memberId);
+        return new MyPageRes(memberInfoResDto, myBakeries);
     }
 
     // Dto 변환

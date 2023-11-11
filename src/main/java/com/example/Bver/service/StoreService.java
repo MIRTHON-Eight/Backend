@@ -4,9 +4,11 @@ import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.store.res.StoreDetailRes;
 import com.example.Bver.dto.store.res.StoreHomeRes;
+import com.example.Bver.entity.Member;
 import com.example.Bver.entity.MyBakery;
 import com.example.Bver.entity.Store;
 import com.example.Bver.repository.BreadRepository;
+import com.example.Bver.repository.MemberRepository;
 import com.example.Bver.repository.MyBakeryRepository;
 import com.example.Bver.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final BreadRepository breadRepository;
+    private final MyBakeryRepository myBakeryRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public List<StoreHomeRes> getBakeries() {
@@ -54,13 +58,16 @@ public class StoreService {
     public List<StoreHomeRes> getMyBakeries(Long memberId) throws BaseException {
         try {
             // MyBakeryRepository를 통해 memberId에 해당하는 MyBakery 목록을 조회
-            List<MyBakery> myBakeries = MyBakeryRepository.findById(id);
+            Member member = memberRepository.findById(memberId).orElseThrow(()-> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
+            List<MyBakery> myBakeries = myBakeryRepository.findAllByMember(member);
 
+            System.out.println("myBakeries = " + myBakeries);
+            
             // MyBakery 목록을 StoreHomeRes DTO로 변환
             return myBakeries.stream()
                     .map(myBakery -> {
                         Store store = myBakery.getStore();
-                        return new StoreHomeRes(store.getId(), store.getStoreName(), store.getStorePhoto());
+                        return StoreHomeRes.toStoreHomeRes(store);
                     })
                     .collect(Collectors.toList());
         } catch (Exception e) {

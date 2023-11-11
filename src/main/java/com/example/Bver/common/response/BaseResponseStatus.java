@@ -26,6 +26,7 @@ public enum BaseResponseStatus {
      * Server Error - 5xx 에러
      */
     INTERNAL_SERVER_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "알 수 없는 에러가 발생하였습니다."),
+    DATABASE_ERROR(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "데이터베이스 에러가 발생했습니다."),
     ;
 
     private final boolean isSuccess;

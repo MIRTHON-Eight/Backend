@@ -12,12 +12,14 @@ import com.example.Bver.repository.MemberRepository;
 import com.example.Bver.repository.MyBakeryRepository;
 import com.example.Bver.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -62,8 +64,6 @@ public class StoreService {
             // MyBakeryRepository를 통해 memberId에 해당하는 MyBakery 목록을 조회
             Member member = memberRepository.findById(memberId).orElseThrow(()-> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
             List<MyBakery> myBakeries = myBakeryRepository.findAllByMember(member);
-
-            System.out.println("myBakeries = " + myBakeries);
 
             // MyBakery 목록을 StoreHomeRes DTO로 변환
             return myBakeries.stream()

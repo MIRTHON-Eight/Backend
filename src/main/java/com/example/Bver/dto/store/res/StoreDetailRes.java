@@ -26,6 +26,7 @@ public class StoreDetailRes {
     @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class MenuBriefRes {
+        private Long menuId;
         private String menuName;
         private String menuImg;
         private int quantity;
@@ -34,6 +35,7 @@ public class StoreDetailRes {
 
         static public MenuBriefRes toMenuBriefRes(Bread bread) {
             return new MenuBriefRes(
+                    bread.getBreadId(),
                     bread.getName(),
                     bread.getImage(),
                     bread.getQuantity(),

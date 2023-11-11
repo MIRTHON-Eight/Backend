@@ -6,9 +6,9 @@ import com.example.Bver.dto.store.res.StoreDetailRes;
 import com.example.Bver.dto.store.res.StoreHomeRes;
 import com.example.Bver.service.StoreService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,15 +29,13 @@ public class StoreController {
         }
     }
 
-    @GetMapping("/api/bakery/{storeId}")
-    public BaseResponse<StoreDetailRes> getBakery(@PathVariable Long storeId) {
+    @GetMapping("/api/bakery/{memberId}/{storeId}")
+    public BaseResponse<StoreDetailRes> getBakery(@PathVariable Long memberId, @PathVariable Long storeId) {
         try {
-            StoreDetailRes bakery = storeService.getBakery(storeId);
+            StoreDetailRes bakery = storeService.getBakery(memberId, storeId);
             return new BaseResponse<>(bakery);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
-        } catch (Exception e) {
-            return new BaseResponse<>(false, 404, "로그인에 실패하였습니다");
         }
     }
 
@@ -52,4 +50,15 @@ public class StoreController {
             return new BaseResponse<>(false, 500, "서버 내부 오류가 발생했습니다");
         }
     }
+
+    @PostMapping("/api/bakery/like/{memberId}/{storeId}")
+    public BaseResponse<String> likeBakery(@PathVariable Long memberId, @PathVariable Long storeId) {
+        try {
+            storeService.likeMyBakery(memberId, storeId);
+            return new BaseResponse<>("해당 가게를 찜하였습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }

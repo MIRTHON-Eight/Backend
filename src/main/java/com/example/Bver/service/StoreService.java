@@ -36,21 +36,23 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public StoreDetailRes getBakery(Long storeId) throws BaseException{
+    public StoreDetailRes getBakery(Long memberId, Long storeId) throws BaseException{
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_STORE));
+
         List<StoreDetailRes.MenuBriefRes> menuBriefResList = breadRepository
                 .findAllByStoreId(store)
                 .stream()
                 .map(StoreDetailRes.MenuBriefRes::toMenuBriefRes)
                 .collect(Collectors.toList());
-
+        Boolean isLike = myBakeryRepository.existsByMemberAndStore(member, store);
         return StoreDetailRes.builder()
                 .storeImg(store.getStorePhoto())
                 .storeLogo(store.getStoreLogo())
                 .storeName(store.getStoreName())
                 .openTime(store.getOperatingHour())
                 .location(store.getLocation())
-                .isLike(false) // todo : 회원 찜 구현 시 isLike 조회.
+                .isLike(isLike)
                 .menuList(menuBriefResList)
                 .build();
     }
@@ -62,7 +64,7 @@ public class StoreService {
             List<MyBakery> myBakeries = myBakeryRepository.findAllByMember(member);
 
             System.out.println("myBakeries = " + myBakeries);
-            
+
             // MyBakery 목록을 StoreHomeRes DTO로 변환
             return myBakeries.stream()
                     .map(myBakery -> {
@@ -76,4 +78,13 @@ public class StoreService {
         }
     }
 
+    public void likeMyBakery(Long memberId, Long storeId) throws BaseException{
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_STORE));
+        try {
+            myBakeryRepository.save(new MyBakery(member, store));
+        } catch (Exception e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
 }

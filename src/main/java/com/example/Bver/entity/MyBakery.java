@@ -24,4 +24,9 @@ public class MyBakery {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
+
+    public MyBakery(Member member, Store store) {
+        this.member = member;
+        this.store = store;
+    }
 }

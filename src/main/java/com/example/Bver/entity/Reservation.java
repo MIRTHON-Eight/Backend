@@ -4,6 +4,7 @@ package com.example.Bver.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,10 +22,14 @@ public class Reservation {
     @JoinColumn(name = "member_id")
     private Member memberId;
 
+    @Column
+    private LocalDateTime createdAt;
+
     static public Reservation toEntity(Member memberId) {
         return new Reservation(memberId);
     }
     public Reservation(Member memberId) {
         this.memberId = memberId;
+        this.createdAt = LocalDateTime.now();
     }
 }

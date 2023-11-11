@@ -3,6 +3,8 @@ package com.example.Bver.controller;
 import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponse;
 import com.example.Bver.common.response.BaseResponseStatus;
+import com.example.Bver.dto.reservation.ReservationBreadBriefRes;
+import com.example.Bver.dto.reservation.ReservationBriefRes;
 import com.example.Bver.dto.reservation.ReservationForm;
 import com.example.Bver.entity.Bread;
 import com.example.Bver.entity.Member;
@@ -33,35 +35,29 @@ public class ReservationController {
 
     private final ReservationBreadRepository reservationBreadRepository;
 
-//    @GetMapping("/api/reservations/{memberId}")
-//    public BaseResponse<List<>> getReservations(@PathVariable Long memberId) {
-//        try {
-//            Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
-//            List<Reservation> reservations = reservationRepository.findAllByMemberId(member);
-//
-//            //성공응답
-//            return new BaseResponse<>(responseList);
-//        } catch (Exception e) {
-//            // 예외가 발생했을 때의 응답 처리
-//            return new BaseResponse<>(false, BaseResponseStatus.INTERNAL_SERVER_ERROR.getCode(), "조회 중 오류가 발생했습니다: " + e.getMessage());
-//        }
-//    }
+    @GetMapping("/api/reservations/{memberId}")
+    public BaseResponse<List<ReservationBriefRes>> getReservations(@PathVariable Long memberId) {
+        try {
+            Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
+            List<ReservationBriefRes> reservationBriefRes = reservationRepository.findAllByMemberId(member).stream().map(ReservationBriefRes::toReservationBriefRes).collect(Collectors.toList());
+            //성공응답
+            return new BaseResponse<>(reservationBriefRes);
+        } catch (Exception e) {
+            // 예외가 발생했을 때의 응답 처리
+            return new BaseResponse<>(false, BaseResponseStatus.INTERNAL_SERVER_ERROR.getCode(), "조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 
-    @GetMapping("/api/reservations/{id}")
-    public BaseResponse<?> show(@PathVariable Long id) {
-        return reservationRepository.findById(id)
-                .map(reservation -> new BaseResponse<>(
-                        true, // isSuccess
-                        "예약 조회 성공", // message
-                        BaseResponseStatus.SUCCESS.getCode(), // code
-                        reservation // result
-                ))
-                .orElse(new BaseResponse<>(
-                        false, // isSuccess
-                        "해당 ID로 예약을 찾을 수 없습니다.",// message
-                        BaseResponseStatus.NOT_FOUND.getCode(), // code
-                        null // result
-                ));
+    @GetMapping("/api/reservations/{reservationId}")
+    public BaseResponse<List<ReservationBreadBriefRes>> show(@PathVariable Long reservationId) {
+        try {
+            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_FOUND));
+            List<ReservationBread> reservationBreadList = reservationBreadRepository.findAllByReservationId(reservation);
+            List<ReservationBreadBriefRes> reservationBreadBriefRes = reservationBreadList.stream().map(ReservationBreadBriefRes::toReservationBriefRes).collect(Collectors.toList());
+            return new BaseResponse<>(reservationBreadBriefRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
     @PostMapping("/api/reservations/{memberId}")
@@ -89,6 +85,4 @@ public class ReservationController {
             return new BaseResponse<>(false, BaseResponseStatus.DATABASE_ERROR.getCode(), "예약 생성에 실패했습니다: " + e.getMessage());
         }
     }
-
-
 }

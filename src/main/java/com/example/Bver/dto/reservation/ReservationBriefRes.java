@@ -1,6 +1,7 @@
 package com.example.Bver.dto.reservation;
 
 import com.example.Bver.entity.Reservation;
+import com.example.Bver.entity.ReservationBread;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ReservationBriefRes {
     private Long reservationId;
+
+    private List<ReservationBreadBriefRes> breadsInfo;
     private LocalDateTime createdAt;
 
     static public ReservationBriefRes toReservationBriefRes(Reservation reservation) {

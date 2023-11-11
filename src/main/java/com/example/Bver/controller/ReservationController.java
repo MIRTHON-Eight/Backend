@@ -35,11 +35,17 @@ public class ReservationController {
 
     private final ReservationBreadRepository reservationBreadRepository;
 
-    @GetMapping("/api/reservations/{memberId}")
+    @GetMapping("/api/reservations/list/{memberId}")
     public BaseResponse<List<ReservationBriefRes>> getReservations(@PathVariable Long memberId) {
         try {
             Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
-            List<ReservationBriefRes> reservationBriefRes = reservationRepository.findAllByMemberId(member).stream().map(ReservationBriefRes::toReservationBriefRes).collect(Collectors.toList());
+            List<ReservationBriefRes> reservationBriefRes = reservationRepository.findAllByMemberId(member).stream().map(reservation -> {
+                ReservationBriefRes res = ReservationBriefRes.toReservationBriefRes(reservation);
+                List<ReservationBread> reservationBreadList = reservationBreadRepository.findAllByReservationId(reservation);
+                List<ReservationBreadBriefRes> reservationBreadBriefRes = reservationBreadList.stream().map(ReservationBreadBriefRes::toReservationBriefRes).collect(Collectors.toList());
+                res.setBreadsInfo(reservationBreadBriefRes);
+                return res;
+            }).collect(Collectors.toList());
             //성공응답
             return new BaseResponse<>(reservationBriefRes);
         } catch (Exception e) {
@@ -72,7 +78,6 @@ public class ReservationController {
             for (ReservationForm form : dto){
                 Bread bread = breadRepository.findById(form.getId()).orElseThrow(()-> new BaseException(BaseResponseStatus.NON_EXIST_STORE));
                 ReservationBread rb = ReservationBread.toEntity(bread,saved,form.getQuantity());
-
                 reservationBreadRepository.save(rb);
             }
             // 성공 응답 반환

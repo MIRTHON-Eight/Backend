@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,8 +19,10 @@ import java.util.List;
 public class ReservationBriefRes {
     private Long reservationId;
 
+    private String storeName;
+
     private List<ReservationBreadBriefRes> breadsInfo;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     static public ReservationBriefRes toReservationBriefRes(Reservation reservation) {
         return new ReservationBriefRes(
@@ -30,6 +33,6 @@ public class ReservationBriefRes {
 
     public ReservationBriefRes(Long reservationId, LocalDateTime createdAt) {
         this.reservationId = reservationId;
-        this.createdAt = createdAt;
+        this.createdAt = createdAt.toLocalDate();
     }
 }

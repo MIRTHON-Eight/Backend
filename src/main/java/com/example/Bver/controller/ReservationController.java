@@ -6,10 +6,7 @@ import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.reservation.ReservationBreadBriefRes;
 import com.example.Bver.dto.reservation.ReservationBriefRes;
 import com.example.Bver.dto.reservation.ReservationForm;
-import com.example.Bver.entity.Bread;
-import com.example.Bver.entity.Member;
-import com.example.Bver.entity.Reservation;
-import com.example.Bver.entity.ReservationBread;
+import com.example.Bver.entity.*;
 import com.example.Bver.repository.BreadRepository;
 import com.example.Bver.repository.MemberRepository;
 import com.example.Bver.repository.ReservationBreadRepository;
@@ -39,13 +36,17 @@ public class ReservationController {
     public BaseResponse<List<ReservationBriefRes>> getReservations(@PathVariable Long memberId) {
         try {
             Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
-            List<ReservationBriefRes> reservationBriefRes = reservationRepository.findAllByMemberId(member).stream().map(reservation -> {
-                ReservationBriefRes res = ReservationBriefRes.toReservationBriefRes(reservation);
-                List<ReservationBread> reservationBreadList = reservationBreadRepository.findAllByReservationId(reservation);
-                List<ReservationBreadBriefRes> reservationBreadBriefRes = reservationBreadList.stream().map(ReservationBreadBriefRes::toReservationBriefRes).collect(Collectors.toList());
-                res.setBreadsInfo(reservationBreadBriefRes);
-                return res;
-            }).collect(Collectors.toList());
+            List<ReservationBriefRes> reservationBriefRes = reservationRepository.findAllByMemberId(member).stream().map(
+                    reservation ->
+                    {
+                        ReservationBriefRes res = ReservationBriefRes.toReservationBriefRes(reservation);
+                        res.setStoreName(reservation.getStoreId().getStoreName());
+                        List<ReservationBread> reservationBreadList = reservationBreadRepository.findAllByReservationId(reservation);
+                        List<ReservationBreadBriefRes> reservationBreadBriefRes = reservationBreadList.stream().map(ReservationBreadBriefRes::toReservationBriefRes).collect(Collectors.toList());
+                        res.setBreadsInfo(reservationBreadBriefRes);
+                        return res;
+                    }
+            ).collect(Collectors.toList());
             //성공응답
             return new BaseResponse<>(reservationBriefRes);
         } catch (Exception e) {
@@ -70,8 +71,9 @@ public class ReservationController {
     public BaseResponse<Integer> create(@PathVariable Long memberId, @RequestBody List<ReservationForm> dto) {
         try {
             Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_MEMBER));
+            Store store = breadRepository.findById(dto.get(0).getId()).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_FOUND)).getStoreId();
             // DTO를 엔티티로 변환
-            Reservation reservation = new Reservation(member);
+            Reservation reservation = new Reservation(member, store);
             // 리파지터리로 엔티티를 DB에 저장
             Reservation saved = reservationRepository.save(reservation);
 

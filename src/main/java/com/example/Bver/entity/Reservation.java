@@ -22,13 +22,16 @@ public class Reservation {
     @JoinColumn(name = "member_id")
     private Member memberId;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store storeId;
     @Column
     private LocalDateTime createdAt;
 
-    static public Reservation toEntity(Member memberId) {
-        return new Reservation(memberId);
+    static public Reservation toEntity(Member memberId, Store storeId) {
+        return new Reservation(memberId, storeId);
     }
-    public Reservation(Member memberId) {
+    public Reservation(Member memberId, Store storeId) {
         this.memberId = memberId;
         this.createdAt = LocalDateTime.now();
     }

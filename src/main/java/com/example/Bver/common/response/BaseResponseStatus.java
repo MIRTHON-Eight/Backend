@@ -22,6 +22,7 @@ public enum BaseResponseStatus {
     NON_EXIST_MEMBER(false, HttpStatus.NOT_FOUND.value(), "해당 사용자를 찾을 수 없습니다."),
     NON_EXIST_STORE(false, HttpStatus.NOT_FOUND.value(), "베이커리를 찾을 수 없습니다."),
 
+    NOT_FOUND(false, HttpStatus.NOT_FOUND.value(), "Resource not found"),
     /**
      * Server Error - 5xx 에러
      */

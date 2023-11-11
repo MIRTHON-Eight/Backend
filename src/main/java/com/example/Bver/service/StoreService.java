@@ -4,8 +4,10 @@ import com.example.Bver.common.exception.BaseException;
 import com.example.Bver.common.response.BaseResponseStatus;
 import com.example.Bver.dto.store.res.StoreDetailRes;
 import com.example.Bver.dto.store.res.StoreHomeRes;
+import com.example.Bver.entity.MyBakery;
 import com.example.Bver.entity.Store;
 import com.example.Bver.repository.BreadRepository;
+import com.example.Bver.repository.MyBakeryRepository;
 import com.example.Bver.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,4 +50,23 @@ public class StoreService {
                 .menuList(menuBriefResList)
                 .build();
     }
+
+    public List<StoreHomeRes> getMyBakeries(Long memberId) throws BaseException {
+        try {
+            // MyBakeryRepository를 통해 memberId에 해당하는 MyBakery 목록을 조회
+            List<MyBakery> myBakeries = MyBakeryRepository.findById(id);
+
+            // MyBakery 목록을 StoreHomeRes DTO로 변환
+            return myBakeries.stream()
+                    .map(myBakery -> {
+                        Store store = myBakery.getStore();
+                        return new StoreHomeRes(store.getId(), store.getStoreName(), store.getStorePhoto());
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // 예외 발생 시 BaseException을 통해 에러 처리
+            throw new BaseException(BaseResponseStatus.DATABASE_ERROR);
+        }
+    }
+
 }

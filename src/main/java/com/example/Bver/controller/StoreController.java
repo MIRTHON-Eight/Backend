@@ -40,4 +40,16 @@ public class StoreController {
             return new BaseResponse<>(false, 404, "로그인에 실패하였습니다");
         }
     }
+
+    @GetMapping("/api/myBakery/{memberId}")
+    public BaseResponse<List<StoreHomeRes>> getMyBakeries(@PathVariable Long memberId) {
+        try {
+            List<StoreHomeRes> myBakeries = storeService.getMyBakeries(memberId);
+            return new BaseResponse<>(myBakeries);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        } catch (Exception e) {
+            return new BaseResponse<>(false, 500, "서버 내부 오류가 발생했습니다");
+        }
+    }
 }
